@@ -25,5 +25,5 @@ steps:
     appName: 'ds4711'
     deployToSlotOrASE: true
     resourceGroupName: 'datascience4711'
-    slotName: 'dev'
+    slotName: 'bokeh'
     containers: 'bokeh-on-docker:$(Build.BuildId)'
