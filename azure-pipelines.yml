@@ -1,0 +1,15 @@
+# Bokeh on Docker azure pipeline yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'Ubuntu 16.04'
+
+steps:
+- task: Docker@1
+  inputs:
+    containerRegistry: 'datascienceacr4711'
+    repository: 'bokeh-on-docker'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
