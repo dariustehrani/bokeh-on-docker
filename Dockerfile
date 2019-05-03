@@ -14,7 +14,7 @@ CMD [ "/bin/bash" ]
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y -qq \
     && apt-get dist-upgrade -y -qq \
-    && apt-get install -y -qq --no-install-recommends wget curl bzip2 ca-certificates apt-transport-https unzip unixodbc unixodbc-dev \
+    && apt-get install -y -qq --no-install-recommends wget gnupg curl bzip2 ca-certificates apt-transport-https unzip unixodbc unixodbc-dev \
     && apt-get autoremove -y -qq \
     && apt-get clean -qq \
     && rm -rf /var/lib/apt/lists/*
@@ -49,22 +49,21 @@ RUN conda config --get channels
 
 # Do not update conda for now
 RUN conda install --quiet --yes \
-    conda
+    conda \
+    && conda clean -a -y -q
 
 #ARG BOKEH_VERSION=1.1.0
 #ARG TORNADO_VERSION=6.0.2
 RUN conda install --quiet --yes \
     bokeh=$BOKEH_VERSION \
     nodejs \ 
+    tornado=$TORNADO_VERSION \
     pyodbc \
-    tornado=$TORNADO_VERSION ;
+    && conda clean -a -y -q
 
 # In case old tornado version is required
 # ARG TORNADO_VERSION
 # RUN sh -c 'if [[ ! -z "$TORNADO_VERSION" ]]; then echo Installing old tornado $TORNADO_VERSION; conda install --quiet --yes tornado=$TORNADO_VERSION; conda clean -ay; fi'
-
-# Clean the conda environment
-RUN conda clean -ay
 
 RUN python -c "import tornado; print('tornado version=' + tornado.version)"
 # Workaround, just calling `bokeh info` crashes
