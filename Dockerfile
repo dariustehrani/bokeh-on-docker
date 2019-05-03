@@ -66,8 +66,9 @@ RUN conda install --quiet --yes \
 # RUN sh -c 'if [[ ! -z "$TORNADO_VERSION" ]]; then echo Installing old tornado $TORNADO_VERSION; conda install --quiet --yes tornado=$TORNADO_VERSION; conda clean -ay; fi'
 
 RUN python -c "import tornado; print('tornado version=' + tornado.version)"
-# Workaround, just calling `bokeh info` crashes
-RUN env BOKEH_RESOURCES=cdn bokeh info
+
+# Settings for bokeh
+ENV BOKEH_RESOURCES=server
 
 # prepare the entrypoint for bokeh
 COPY ./scripts/entrypoint.sh /usr/local/bin/
@@ -78,4 +79,4 @@ RUN mkdir /bokeh-app
 COPY bokeh-app/* /bokeh-app/
 
 EXPOSE 8080
-# ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["entrypoint.sh"]
