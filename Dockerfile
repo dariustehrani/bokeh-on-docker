@@ -71,7 +71,7 @@ RUN env BOKEH_RESOURCES=cdn bokeh info
 
 # prepare the entrypoint for bokeh
 COPY ./scripts/entrypoint.sh /usr/local/bin/
-RUN ln -s usr/local/bin/entrypoint.sh /
+RUN ln -s /usr/local/bin/entrypoint.sh /
 
 # copy your application into the container
 RUN mkdir /bokeh-app
