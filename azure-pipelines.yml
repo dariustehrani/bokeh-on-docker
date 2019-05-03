@@ -7,9 +7,23 @@ pool:
   vmImage: 'Ubuntu 16.04'
 
 steps:
-- task: Docker@1
+- task: Docker@2
+  displayName: Build and Push
   inputs:
     containerRegistry: 'datascienceacr4711'
     repository: 'bokeh-on-docker'
     command: 'buildAndPush'
     Dockerfile: '**/Dockerfile'
+    tags: |
+     $(Build.BuildId)
+     latest
+
+- task: AzureWebAppContainer@1
+  displayName: Deploy to Development Preview
+  inputs:
+    azureSubscription: 'datascience4711'
+    appName: 'ds4711'
+    deployToSlotOrASE: true
+    resourceGroupName: 'datascience4711'
+    slotName: 'dev'
+    containers: 'bokeh-on-docker:$(Build.BuildId)'
