@@ -1,4 +1,3 @@
 #!/bin/bash
 set -e
-cd /bokeh-app
-exec /opt/conda/bin/bokeh serve .
+exec /opt/conda/bin/bokeh serve bokeh-app --port 8080

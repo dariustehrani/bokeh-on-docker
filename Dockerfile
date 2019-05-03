@@ -77,5 +77,5 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 RUN mkdir /bokeh-app
 COPY bokeh-app/* /bokeh-app/
 
-EXPOSE 5006
+EXPOSE 8080
 ENTRYPOINT ["entrypoint.sh"]
