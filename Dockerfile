@@ -8,14 +8,22 @@ LABEL Version=0.0.1
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 ENV PATH /opt/conda/bin:$PATH
 
+CMD [ "/bin/bash" ]
+
 # update os & install some basic packages needed later
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y -qq \
     && apt-get dist-upgrade -y -qq \
     && apt-get install -y -qq --no-install-recommends wget curl bzip2 ca-certificates apt-transport-https unzip unixodbc unixodbc-dev \
     && apt-get autoremove -y -qq \
-    &&  apt-get clean -qq \
+    && apt-get clean -qq \
     && rm -rf /var/lib/apt/lists/*
+
+# install ODBC driver for SQL Server
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+RUN curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+RUN apt-get update -y
+RUN ACCEPT_EULA=Y apt-get install msodbcsql17 -y
 
 # set the required versions
 ARG PYTHON=3
@@ -33,8 +41,6 @@ ARG TINI_VERSION=v0.16.1
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
 RUN chmod +x /usr/bin/tini
 
-CMD [ "/bin/bash" ]
-
 # set default conda channels
 RUN conda config --set auto_update_conda off
 RUN conda config --append channels bokeh
@@ -50,7 +56,8 @@ RUN conda install --quiet --yes \
 RUN conda install --quiet --yes \
     bokeh=$BOKEH_VERSION \
     nodejs \ 
-    tornado=$TORNADO_VERSION ;\
+    pyodbc \
+    tornado=$TORNADO_VERSION ;
 
 # In case old tornado version is required
 # ARG TORNADO_VERSION
@@ -63,13 +70,13 @@ RUN python -c "import tornado; print('tornado version=' + tornado.version)"
 # Workaround, just calling `bokeh info` crashes
 RUN env BOKEH_RESOURCES=cdn bokeh info
 
-# copy your application into the container
-RUN mkdir /bokeh-app
-COPY bokeh-app/* /bokeh-app
-
 # prepare the entrypoint for bokeh
 COPY ./scripts/entrypoint.sh /usr/local/bin/
 RUN ln -s usr/local/bin/entrypoint.sh /
 
+# copy your application into the container
+RUN mkdir /bokeh-app
+COPY bokeh-app/* /bokeh-app/
+
 EXPOSE 5006
-ENTRYPOINT [ "entrypoint.sh"]
+ENTRYPOINT ["entrypoint.sh"]
