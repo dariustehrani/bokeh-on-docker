@@ -49,15 +49,13 @@ RUN conda config --get channels
 
 # Do not update conda for now
 RUN conda install --quiet --yes \
-    conda \
-    && conda clean -a -y -q
+    conda 
 
-#ARG BOKEH_VERSION=1.1.0
-#ARG TORNADO_VERSION=6.0.2
+
 RUN conda install --quiet --yes \
-    bokeh=$BOKEH_VERSION \
+    bokeh \
     nodejs \ 
-    tornado=$TORNADO_VERSION \
+    tornado \
     pyodbc \
     && conda clean -a -y -q
 
@@ -65,10 +63,11 @@ RUN conda install --quiet --yes \
 # ARG TORNADO_VERSION
 # RUN sh -c 'if [[ ! -z "$TORNADO_VERSION" ]]; then echo Installing old tornado $TORNADO_VERSION; conda install --quiet --yes tornado=$TORNADO_VERSION; conda clean -ay; fi'
 
+#ENV BOKEH_VERSION=1.1.0
+#ENV TORNADO_VERSION=6.0.2
+
 RUN python -c "import tornado; print('tornado version=' + tornado.version)"
 
-# Settings for bokeh
-ENV BOKEH_RESOURCES=server
 
 # prepare the entrypoint for bokeh
 COPY ./scripts/entrypoint.sh /usr/local/bin/
