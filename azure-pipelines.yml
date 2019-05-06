@@ -18,16 +18,16 @@ steps:
      $(Build.BuildId)
      latest
 
-- task: AzureRmWebAppDeployment@4
-  displayName: Deploy to DEV Slot
-  inputs:
-    ConnectionType: 'AzureRM'
-    azureSubscription: 'datascience4711'
-    appType: 'webAppContainer'
-    WebAppName: 'ds4711'
-    deployToSlotOrASE: true
-    ResourceGroupName: 'datascience4711'
-    SlotName: 'dev'
-    DockerNamespace: 'datascience.azurecr.io'
-    DockerRepository: 'bokeh-on-docker'
-    DockerImageTag: '$(Build.BuildId)'
+# - task: AzureRmWebAppDeployment@4
+#   displayName: Deploy to DEV Slot
+#   inputs:
+#     ConnectionType: 'AzureRM'
+#     azureSubscription: 'datascience4711'
+#     appType: 'webAppContainer'
+#     WebAppName: 'ds4711'
+#     deployToSlotOrASE: true
+#     ResourceGroupName: 'datascience4711'
+#     SlotName: 'dev'
+#     DockerNamespace: 'datascience.azurecr.io'
+#     DockerRepository: 'bokeh-on-docker'
+#     DockerImageTag: '$(Build.BuildId)'

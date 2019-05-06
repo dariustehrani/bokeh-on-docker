@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  bokeh:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bokeh-on-docker
+    container_name: bokeh-on-docker
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  webserver:
+    image: nginx:mainline-alpine
+    container_name: webserver
+    restart: unless-stopped
+    ports:
+      - "80:80"
+  #  volumes:
+   #   - ./nginx-conf:/etc/nginx/conf.d
+    depends_on:
+      - bokeh
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge  
